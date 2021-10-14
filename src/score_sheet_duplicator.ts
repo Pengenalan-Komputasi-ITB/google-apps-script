@@ -1,49 +1,118 @@
 // This script help create multiple sheet based on a template and save it into a destination folder
 
-const destinationFolder = DriveApp.getFolderById("1cxJcMS1xCHQVr9fUFPEnNQ--_EO6wR5X");
-const scoreSheetTemplate = DriveApp.getFileById("1BKXfN9I9_T0DfMG58swDKWVqWGHVlyQLKCHdsIfsYMw");
+const destinationFolder = DriveApp.getFolderById(
+  "12Mg_bk8zFyYN5idKsjhZKKoMp36QJvvB"
+);
+const nonProgrammingDestinationFolder = DriveApp.getFolderById(
+  "1kyWv1jJ6fVMp4kf92qUZP6MCIzFSMf5t"
+);
 
-const shifts = ["1.1", "1.3", "1.4", "2.1", "2.2", "2.3", "3.1", "3.2", "3.3", "3.4", "4.1", "4.3", "4.4", "5.1", "5.3", "5.4"];
+const programmingScoreSheetTemplate = DriveApp.getFileById(
+  "14n9YvMSkD0fuIi2cygRmZPr1qjj5rSBROrNtfRy4EBg"
+);
 
-const classesMap = {};
-classesMap["1.1"] = ["A", "B", "C", "D", "E", "F", "G"]
-classesMap["1.3"] = ["A", "B", "C", "D"]
-classesMap["1.4"] = ["A", "B"]
-classesMap["2.1"] = ["A", "B", "C", "D"]
-classesMap["2.3"] = ["A", "B", "C", "D", "E", "F"]
-classesMap["3.1"] = ["A", "B", "C", "D"]
-classesMap["3.2"] = ["A", "B"]
-classesMap["3.3"] = ["A", "B", "C"]
-classesMap["3.4"] = ["A", "B", "C"]
-classesMap["4.1"] = ["A", "B", "C", "D"]
-classesMap["4.3"] = ["A", "B", "C", "D", "E"]
-classesMap["4.4"] = ["A", "B"]
-classesMap["5.3"] = ["A", "B", "C", "D"]
-classesMap["5.4"] = ["E", "F"]
+const nonProgrammingScoreSheetTemplate = DriveApp.getFileById(
+  "1k5kmfF3wdrOmdGCLFI8hwdd3IaX3rvQqEoe_DJwxOls"
+);
 
+const programmingClassMap = {
+  "1.3": ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
+  "1.4": ["A", "B", "C", "D"],
+  "1.5": ["A"],
+  "3.1": ["A", "B", "C"],
+  "3.4": ["A"],
+  "3.5": ["A", "B", "C", "D"],
+  "4.5": ["A", "B"],
+  "5.1": ["A", "B", "C", "D", "E"],
+  "5.2": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+  ],
+  "5.3": ["A", "B"],
+  "5.4": ["A", "B"],
+};
+
+const nonProgrammingClassMap = {
+  "1.2": ["A"],
+  "3.5": ["E"],
+  "5.1": ["F", "G", "H", "I", "J"],
+  "5.4": ["A", "B", "C", "D", "E"],
+  "5.5": ["A", "B", "C", "D"],
+};
 
 function duplicateScoreSheet() {
-    let textOutput = "\n";
+  let textOutput = "\n";
 
-    for (var shiftIdx = 0; shiftIdx < shifts.length; shiftIdx++) {
-        let shiftName = shifts[shiftIdx];
-        let classes = classesMap[shiftName];
+  for (const key in programmingClassMap) {
+    let shiftName = key;
+    let classes = programmingClassMap[shiftName];
 
-        if (!classes) {
-            continue;
-        }
-
-        for (var classIdx = 0; classIdx < classes.length; classIdx++) {
-            let className = classes[classIdx];
-            let fullSheetName = shiftName + "-" + className;
-
-            let newScoreSheet = scoreSheetTemplate.makeCopy(fullSheetName, destinationFolder);
-            newScoreSheet.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.EDIT);
-
-            let scoreSheetURL = newScoreSheet.getUrl();
-            textOutput = textOutput + fullSheetName + "," + scoreSheetURL +"\n";
-        }
+    if (!classes) {
+      continue;
     }
 
-    Logger.log(textOutput);
-};
+    for (var classIdx = 0; classIdx < classes.length; classIdx++) {
+      let className = classes[classIdx];
+      let fullSheetName = shiftName + "-" + className;
+
+      let newScoreSheet = programmingScoreSheetTemplate.makeCopy(
+        fullSheetName,
+        destinationFolder
+      );
+      newScoreSheet.setSharing(
+        DriveApp.Access.ANYONE_WITH_LINK,
+        DriveApp.Permission.EDIT
+      );
+
+      let scoreSheetURL = newScoreSheet.getUrl();
+      textOutput = textOutput + fullSheetName + "," + scoreSheetURL + "\n";
+    }
+  }
+
+  Logger.log(textOutput);
+}
+
+function duplicateNonProgrammingScoreSheet() {
+  let textOutput = "\n";
+
+  for (const key in nonProgrammingClassMap) {
+    let shiftName = key;
+    let classes = nonProgrammingClassMap[shiftName];
+
+    if (!classes) {
+      continue;
+    }
+
+    for (var classIdx = 0; classIdx < classes.length; classIdx++) {
+      let className = classes[classIdx];
+      let fullSheetName = shiftName + "-" + className;
+
+      let newScoreSheet = nonProgrammingScoreSheetTemplate.makeCopy(
+        fullSheetName,
+        destinationFolder
+      );
+      newScoreSheet.setSharing(
+        DriveApp.Access.ANYONE_WITH_LINK,
+        DriveApp.Permission.EDIT
+      );
+
+      let scoreSheetURL = newScoreSheet.getUrl();
+      textOutput = textOutput + fullSheetName + "," + scoreSheetURL + "\n";
+    }
+  }
+
+  Logger.log(textOutput);
+}
